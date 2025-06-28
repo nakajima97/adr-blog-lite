@@ -7,7 +7,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * 記事一覧取得UseCase
- * 
+ *
  * ビジネスロジック:
  * - 公開済み記事のみ取得
  * - 最新順で並び替え
@@ -19,9 +19,8 @@ final readonly class ListArticlesUseCase
     /**
      * 公開済み記事一覧を取得
      *
-     * @param int $page ページ番号
-     * @param int $perPage 1ページあたりの件数
-     * @return LengthAwarePaginator
+     * @param  int  $page  ページ番号
+     * @param  int  $perPage  1ページあたりの件数
      */
     public function execute(int $page = 1, int $perPage = 10): LengthAwarePaginator
     {
@@ -34,4 +33,4 @@ final readonly class ListArticlesUseCase
                 page: $page
             );
     }
-} 
+}

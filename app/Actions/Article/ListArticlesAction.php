@@ -2,14 +2,14 @@
 
 namespace App\Actions\Article;
 
-use App\UseCases\Article\ListArticlesUseCase;
 use App\Responders\Web\ArticleWebResponder;
-use Illuminate\Http\Request;
+use App\UseCases\Article\ListArticlesUseCase;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 /**
  * 記事一覧表示Action
- * 
+ *
  * ADRパターンのエントリポイント:
  * - HTTPリクエストの受け取り
  * - パラメータの検証と抽出
@@ -26,8 +26,7 @@ final readonly class ListArticlesAction
     /**
      * 記事一覧表示のメイン処理
      *
-     * @param Request $request HTTPリクエスト
-     * @return View
+     * @param  Request  $request  HTTPリクエスト
      */
     public function __invoke(Request $request): View
     {
@@ -41,4 +40,4 @@ final readonly class ListArticlesAction
         // Responderでレスポンス整形
         return $this->responder->index($articles);
     }
-} 
+}

@@ -13,7 +13,7 @@ use Tests\TestCase;
 
 /**
  * ArticleWebResponderのユニットテスト
- * 
+ *
  * レスポンス整形の単体テスト:
  * - ビューの生成
  * - ページネーション情報の整理
@@ -28,8 +28,8 @@ class ArticleWebResponderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
-        $this->responder = new ArticleWebResponder();
+
+        $this->responder = new ArticleWebResponder;
     }
 
     public function test_記事一覧ビューを正常に生成する(): void
@@ -139,9 +139,9 @@ class ArticleWebResponderTest extends TestCase
      * テスト用のモックペジネーターを作成
      */
     private function createMockPaginator(
-        array $items, 
-        int $currentPage, 
-        int $perPage, 
+        array $items,
+        int $currentPage,
+        int $perPage,
         int $total
     ): LengthAwarePaginator {
         return new ConcretePaginator(
@@ -155,4 +155,4 @@ class ArticleWebResponderTest extends TestCase
             ]
         );
     }
-} 
+}

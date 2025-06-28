@@ -10,18 +10,17 @@ use App\UseCases\Article\ListArticlesUseCase;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\TestCase;
 
 /**
  * ListArticlesActionのユニットテスト
- * 
+ *
  * ADRパターンのエントリポイントのテスト:
  * - HTTPリクエストの受け取り
  * - パラメータの検証と抽出
  * - UseCaseへの委譲
  * - Responderでのレスポンス生成
- * 
+ *
  * 注意: readonly finalクラスはモックできないため、
  * 実際のオブジェクトを使用した統合テスト形式で実装
  */
@@ -30,16 +29,17 @@ class ListArticlesActionTest extends TestCase
     use RefreshDatabase;
 
     private ListArticlesAction $action;
+
     private User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
-        $useCase = new ListArticlesUseCase();
-        $responder = new ArticleWebResponder();
+
+        $useCase = new ListArticlesUseCase;
+        $responder = new ArticleWebResponder;
         $this->action = new ListArticlesAction($useCase, $responder);
-        
+
         // テスト用ユーザー作成
         $this->user = User::factory()->create();
     }
@@ -57,7 +57,7 @@ class ListArticlesActionTest extends TestCase
 
         $this->assertInstanceOf(View::class, $result);
         $this->assertEquals('articles.index', $result->getName());
-        
+
         // ビューデータを確認
         $data = $result->getData();
         $this->assertEquals(1, $data['currentPage']);
@@ -76,7 +76,7 @@ class ListArticlesActionTest extends TestCase
         $result = $this->action->__invoke($request);
 
         $this->assertInstanceOf(View::class, $result);
-        
+
         // ビューデータを確認
         $data = $result->getData();
         $this->assertEquals(2, $data['currentPage']);
@@ -95,7 +95,7 @@ class ListArticlesActionTest extends TestCase
         $result = $this->action->__invoke($request);
 
         $this->assertInstanceOf(View::class, $result);
-        
+
         // 負の値は1に補正される
         $data = $result->getData();
         $this->assertEquals(1, $data['currentPage']);
@@ -132,7 +132,7 @@ class ListArticlesActionTest extends TestCase
         $result = $this->action->__invoke($request);
 
         $this->assertInstanceOf(View::class, $result);
-        
+
         // 不正な値は最小値に補正される
         $data = $result->getData();
         $this->assertEquals(1, $data['currentPage']);
@@ -150,7 +150,7 @@ class ListArticlesActionTest extends TestCase
         $result = $this->action->__invoke($request);
 
         $this->assertInstanceOf(View::class, $result);
-        
+
         // 小数点は整数に変換される
         $data = $result->getData();
         $this->assertEquals(2, $data['currentPage']);
@@ -174,11 +174,11 @@ class ListArticlesActionTest extends TestCase
         foreach ($testCases as $case) {
             $request = Request::create("/articles?per_page={$case['per_page']}", 'GET');
             $result = $this->action->__invoke($request);
-            
+
             $this->assertInstanceOf(View::class, $result);
-            
+
             $data = $result->getData();
             $this->assertEquals($case['expected'], $data['articles']->perPage());
         }
     }
-} 
+}

@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 /**
  * ListArticlesUseCaseのユニットテスト
- * 
+ *
  * ビジネスロジックの単体テスト:
  * - 公開済み記事の取得
  * - 最新順の並び替え
@@ -22,13 +22,14 @@ class ListArticlesUseCaseTest extends TestCase
     use RefreshDatabase;
 
     private ListArticlesUseCase $useCase;
+
     private User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
-        $this->useCase = new ListArticlesUseCase();
+
+        $this->useCase = new ListArticlesUseCase;
         $this->user = User::factory()->create();
     }
 
@@ -50,7 +51,7 @@ class ListArticlesUseCaseTest extends TestCase
 
         // 公開記事のみが取得される
         $this->assertCount(3, $result->items());
-        
+
         // すべて公開ステータスであることを確認
         foreach ($result->items() as $article) {
             $this->assertEquals('published', $article->status);
@@ -97,7 +98,7 @@ class ListArticlesUseCaseTest extends TestCase
 
         // 1ページ目（10件）
         $result = $this->useCase->execute(page: 1, perPage: 10);
-        
+
         $this->assertEquals(1, $result->currentPage());
         $this->assertEquals(10, $result->perPage());
         $this->assertEquals(15, $result->total());
@@ -106,7 +107,7 @@ class ListArticlesUseCaseTest extends TestCase
 
         // 2ページ目（5件）
         $result = $this->useCase->execute(page: 2, perPage: 10);
-        
+
         $this->assertEquals(2, $result->currentPage());
         $this->assertCount(5, $result->items());
     }
@@ -171,4 +172,4 @@ class ListArticlesUseCaseTest extends TestCase
         $this->assertEquals(0, $result->count());
         $this->assertEquals(999, $result->currentPage());
     }
-} 
+}

@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Actions\Article\ListArticlesAction;
+use Illuminate\Support\Facades\Route;
 
 // ホームページ
 Route::get('/', function () {

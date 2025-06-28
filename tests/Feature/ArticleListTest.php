@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 /**
  * 記事一覧機能の統合テスト
- * 
+ *
  * ADRパターンで実装された記事一覧機能の
  * エンドツーエンドテストを実行
  */
@@ -22,7 +22,7 @@ class ArticleListTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // テスト用ユーザーを作成
         $this->user = User::factory()->create([
             'name' => 'テストユーザー',
@@ -63,12 +63,12 @@ class ArticleListTest extends TestCase
         $response = $this->get('/articles');
 
         $response->assertStatus(200);
-        
+
         // 公開記事のタイトルが表示されることを確認
         foreach ($publishedArticles as $article) {
             $response->assertSee($article->title);
         }
-        
+
         // 下書き記事のタイトルは表示されないことを確認
         $response->assertDontSee('下書き記事');
     }
@@ -189,4 +189,4 @@ class ArticleListTest extends TestCase
         $response = $this->get('/articles?per_page=100');
         $response->assertStatus(200);
     }
-} 
+}
