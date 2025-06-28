@@ -14,10 +14,10 @@
                    class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
                     記事一覧
                 </a>
-                <a href="{{ route('articles.create', []) ?? '/articles/create' }}" 
-                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                <span class="bg-gray-400 text-white px-4 py-2 rounded-md text-sm font-medium cursor-not-allowed opacity-50" 
+                      title="未実装">
                     記事を投稿
-                </a>
+                </span>
             </nav>
 
             <!-- Mobile menu button -->
@@ -43,10 +43,9 @@
                class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors">
                 記事一覧
             </a>
-            <a href="{{ route('articles.create', []) ?? '/articles/create' }}" 
-               class="bg-blue-600 hover:bg-blue-700 text-white block px-3 py-2 rounded-md text-base font-medium transition-colors">
-                記事を投稿
-            </a>
+            <span class="bg-gray-400 text-white block px-3 py-2 rounded-md text-base font-medium cursor-not-allowed opacity-50">
+                記事を投稿（未実装）
+            </span>
         </div>
     </div>
 </header> 
