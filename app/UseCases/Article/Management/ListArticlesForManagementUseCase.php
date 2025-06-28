@@ -43,9 +43,8 @@ final readonly class ListArticlesForManagementUseCase
 
     /**
      * クエリにフィルタリング条件を適用
-     * 
-     * @param Builder<Article> $query
-     * @param array $filters
+     *
+     * @param  Builder<Article>  $query
      */
     private function applyFilters(Builder $query, array $filters): void
     {
