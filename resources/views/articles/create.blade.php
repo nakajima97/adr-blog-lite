@@ -8,7 +8,7 @@
     <nav class="mb-8">
         <ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
             <li>
-                <a href="{{ route('articles.index', []) ?? '/articles' }}" 
+                <a href="{{ route('articles.management.index', []) ?? '/articles' }}" 
                    class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
                     記事一覧
                 </a>

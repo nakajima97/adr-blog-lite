@@ -5,9 +5,20 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <!-- ヘッダー部分 -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">記事管理</h1>
-        <p class="text-gray-600">登録されている記事 {{ $totalCount }} 件</p>
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">記事管理</h1>
+            <p class="text-gray-600">登録されている記事 {{ $totalCount }} 件</p>
+        </div>
+        <div>
+            <a href="{{ route('articles.create') }}" 
+               class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors shadow-sm">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                記事を投稿
+            </a>
+        </div>
     </div>
 
     <!-- フィルタリングフォーム -->
@@ -60,6 +71,15 @@
                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
                         <i class="fas fa-times mr-1"></i>
                         クリア
+                    </a>
+                </div>
+                <div>
+                    <a href="{{ route('articles.create') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        新しい記事を作成
                     </a>
                 </div>
             </div>
