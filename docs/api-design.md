@@ -19,94 +19,11 @@ ADR Blog Lite のAPI設計書です。ADRパターン（Action-Domain-Responder�
 
 ## 認証方式
 
-### Laravel Sanctum (SPA認証)
-```
-POST /api/auth/login
-- セッションベース認証
-- CSRF保護
-- Cookie自動設定
-```
+**注記**: 学習目的のため、認証機能は実装しません。すべてのAPIは認証なしでアクセス可能です。
 
 ## エンドポイント一覧
 
-### 認証関連API
-
-#### ログイン
-```
-POST /api/auth/login
-```
-
-**Action**: `App\Actions\Auth\LoginAction`
-**UseCase**: `App\UseCases\Auth\LoginUseCase`
-**Responder**: `App\Responders\Api\AuthResponder`
-
-**リクエスト**:
-```json
-{
-  "email": "admin@example.com",
-  "password": "password"
-}
-```
-
-**レスポンス（成功）**:
-```json
-{
-  "status": "success",
-  "message": "ログインしました",
-  "data": {
-    "user": {
-      "id": 1,
-      "name": "Blog Admin",
-      "email": "admin@example.com"
-    }
-  }
-}
-```
-
-**レスポンス（失敗）**:
-```json
-{
-  "status": "error",
-  "message": "認証に失敗しました",
-  "errors": {
-    "email": ["メールアドレスまたはパスワードが正しくありません"]
-  }
-}
-```
-
-#### ログアウト
-```
-POST /api/auth/logout
-```
-
-**レスポンス**:
-```json
-{
-  "status": "success",
-  "message": "ログアウトしました"
-}
-```
-
-#### 認証確認
-```
-GET /api/auth/user
-```
-
-**レスポンス**:
-```json
-{
-  "status": "success",
-  "data": {
-    "user": {
-      "id": 1,
-      "name": "Blog Admin",
-      "email": "admin@example.com"
-    }
-  }
-}
-```
-
-### 記事関連API（公開）
+### 記事関連API
 
 #### 記事一覧取得
 ```
@@ -199,18 +116,18 @@ GET /api/articles/{id}
 }
 ```
 
-### 記事関連API（管理者）
+### 記事管理API
 
-#### 管理者用記事一覧取得
+**注記**: 学習目的のため、認証機能は実装しません。管理機能も認証なしでアクセス可能です。
+
+#### 記事管理一覧取得
 ```
-GET /api/admin/articles
+GET /api/articles/manage
 ```
 
-**Action**: `App\Actions\Admin\Articles\IndexAction`
-**UseCase**: `App\UseCases\Admin\Articles\GetAllArticlesUseCase`
-**Responder**: `App\Responders\Api\AdminResponder`
-
-**認証**: 必須
+**Action**: `App\Actions\Articles\ManageIndexAction`
+**UseCase**: `App\UseCases\Articles\GetAllArticlesUseCase`
+**Responder**: `App\Responders\Api\ArticleResponder`
 
 **クエリパラメータ**:
 - `page`: ページ番号
@@ -248,14 +165,12 @@ GET /api/admin/articles
 
 #### 記事作成
 ```
-POST /api/admin/articles
+POST /api/articles
 ```
 
-**Action**: `App\Actions\Admin\Articles\CreateAction`
-**UseCase**: `App\UseCases\Admin\Articles\CreateArticleUseCase`
-**Responder**: `App\Responders\Api\AdminResponder`
-
-**認証**: 必須
+**Action**: `App\Actions\Articles\CreateAction`
+**UseCase**: `App\UseCases\Articles\CreateArticleUseCase`
+**Responder**: `App\Responders\Api\ArticleResponder`
 
 **リクエスト**:
 ```json
@@ -298,12 +213,12 @@ POST /api/admin/articles
 
 #### 記事更新
 ```
-PUT /api/admin/articles/{id}
+PUT /api/articles/{id}
 ```
 
-**Action**: `App\Actions\Admin\Articles\UpdateAction`
-**UseCase**: `App\UseCases\Admin\Articles\UpdateArticleUseCase`
-**Responder**: `App\Responders\Api\AdminResponder`
+**Action**: `App\Actions\Articles\UpdateAction`
+**UseCase**: `App\UseCases\Articles\UpdateArticleUseCase`
+**Responder**: `App\Responders\Api\ArticleResponder`
 
 **リクエスト**:
 ```json
@@ -334,12 +249,12 @@ PUT /api/admin/articles/{id}
 
 #### 記事削除
 ```
-DELETE /api/admin/articles/{id}
+DELETE /api/articles/{id}
 ```
 
-**Action**: `App\Actions\Admin\Articles\DeleteAction`
-**UseCase**: `App\UseCases\Admin\Articles\DeleteArticleUseCase`
-**Responder**: `App\Responders\Api\AdminResponder`
+**Action**: `App\Actions\Articles\DeleteAction`
+**UseCase**: `App\UseCases\Articles\DeleteArticleUseCase`
+**Responder**: `App\Responders\Api\ArticleResponder`
 
 **レスポンス**:
 ```json

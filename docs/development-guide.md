@@ -26,8 +26,8 @@ ADR Blog Lite の開発手順書です。ADRパターン（Action-Domain-Respond
 mkdir -p app/{Actions,UseCases,Responders/{Api,Web},Support/{Enums,Traits},Exceptions}
 
 # サブディレクトリ作成
-mkdir -p app/Actions/{Articles,Auth,Admin/Articles}
-mkdir -p app/UseCases/{Articles,Auth,Admin/Articles}
+mkdir -p app/Actions/Articles
+mkdir -p app/UseCases/Articles
 mkdir -p app/Responders/Api
 mkdir -p app/Responders/Web
 ```
@@ -37,15 +37,9 @@ mkdir -p app/Responders/Web
 ```
 app/
 ├── Actions/              # ADRのAction層
-│   ├── Articles/         # 公開記事関連
-│   ├── Auth/            # 認証関連  
-│   └── Admin/           # 管理機能
-│       └── Articles/    # 管理記事関連
+│   └── Articles/         # 記事関連（公開・管理共通）
 ├── UseCases/            # ビジネスロジック
-│   ├── Articles/
-│   ├── Auth/
-│   └── Admin/
-│       └── Articles/
+│   └── Articles/        # 記事関連ビジネスロジック
 ├── Responders/          # レスポンス整形
 │   ├── Api/            # JSON API用
 │   └── Web/            # Web画面用
@@ -650,102 +644,7 @@ final class DuplicateTitleException extends Exception
 }
 ```
 
-### Phase 6: 認証関連の実装
-
-#### 6.1 ログインAction
-
-```php
-<?php
-// app/Actions/Auth/LoginAction.php
-
-namespace App\Actions\Auth;
-
-use App\Actions\BaseAction;
-use App\Http\Requests\Auth\LoginRequest;
-use App\UseCases\Auth\LoginUseCase;
-use App\Responders\Api\AuthResponder;
-use Illuminate\Http\JsonResponse;
-
-/**
- * ログインAction
- * 
- * 【学習ポイント】
- * - 認証処理の実装
- * - セキュリティの考慮
- * - エラーハンドリング
- */
-final readonly class LoginAction extends BaseAction
-{
-    public function __construct(
-        private LoginUseCase $useCase,
-        private AuthResponder $responder,
-    ) {}
-
-    public function __invoke(LoginRequest $request): JsonResponse
-    {
-        try {
-            $user = $this->useCase->execute(
-                email: $request->string('email'),
-                password: $request->string('password'),
-                remember: $request->boolean('remember', false)
-            );
-
-            return $this->responder->loggedIn($user);
-
-        } catch (\App\Exceptions\AuthenticationFailedException $e) {
-            return $this->responder->authenticationFailed();
-        }
-    }
-}
-```
-
-#### 6.2 ログインUseCase
-
-```php
-<?php
-// app/UseCases/Auth/LoginUseCase.php
-
-namespace App\UseCases\Auth;
-
-use App\UseCases\BaseUseCase;
-use App\Models\User;
-use App\Exceptions\AuthenticationFailedException;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-
-/**
- * ログインUseCase
- * 
- * 【学習ポイント】
- * - 認証ロジックの実装
- * - セキュリティの考慮
- * - ログ記録
- */
-final readonly class LoginUseCase extends BaseUseCase
-{
-    public function execute(string $email, string $password, bool $remember = false): User
-    {
-        $this->logExecution('Login', ['email' => $email]);
-
-        // ユーザー検索
-        $user = User::where('email', $email)->first();
-
-        if (!$user || !Hash::check($password, $user->password)) {
-            // セキュリティ：同じ時間でレスポンス
-            usleep(random_int(100000, 300000));
-            
-            throw new AuthenticationFailedException('認証に失敗しました');
-        }
-
-        // ログイン処理
-        Auth::login($user, $remember);
-
-        logger()->info('User logged in', ['user_id' => $user->id]);
-
-        return $user;
-    }
-}
-```
+**注記**: 認証機能は学習範囲外のため実装しません。ADRパターンの習得に集中します。
 
 ## 🛠️ 開発手順（段階的実装）
 
@@ -774,7 +673,7 @@ php artisan db:seed
 ### Step 3: 機能別実装（推奨順序）
 1. **記事一覧表示**（基本的なADRパターン）
 2. **記事詳細表示**（URL パラメータ処理）
-3. **管理者ログイン**（認証処理）
+3. **記事管理一覧**（フィルタリング・状態管理）
 4. **記事作成**（フォーム処理・トランザクション）
 5. **記事更新・削除**（複雑なビジネスロジック）
 
@@ -796,10 +695,10 @@ php artisan db:seed
 - 記事作成・更新機能
 - バリデーションテスト
 
-### 3週目: 認証とセキュリティ
-- 認証機能の実装
-- セキュリティ対策
-- 認証テスト
+### 3週目: 記事管理とCRUD操作
+- 記事管理一覧機能
+- フィルタリング・検索機能
+- CRUD操作の完成
 
 ### 4週目: 高度な実装とテスト
 - 複雑なビジネスロジック
@@ -817,7 +716,7 @@ php artisan db:seed
 ### Laravel スキル確認
 - [ ] Eloquent ORM を効果的に使用できる
 - [ ] FormRequest でバリデーションを実装できる
-- [ ] 認証機能を実装できる
+- [ ] CRUD操作を適切に実装できる
 - [ ] テストを適切に作成できる
 
 ### コード品質確認

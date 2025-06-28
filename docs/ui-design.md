@@ -15,8 +15,10 @@ ADR Blog Lite の画面設計書です。学習目的に最適化されたシン
 ### 技術スタック
 - **フロントエンド**: Blade テンプレート
 - **CSS フレームワーク**: Tailwind CSS（学習用）
-- **JavaScript**: Alpine.js（軽量・学習しやすい）
+- **JavaScript**: 最小限のバニラJS（必要時のみ）
 - **アイコン**: Heroicons（無料・Tailwind CSS互換）
+
+**注記**: Livewire、Alpine.jsは学習焦点の明確化のため使用しません。
 
 ## 画面一覧
 
@@ -25,9 +27,10 @@ ADR Blog Lite の画面設計書です。学習目的に最適化されたシン
 2. 記事詳細画面 (`/articles/{id}`)
 
 ### 管理画面
-3. ログイン画面 (`/admin/login`)
-4. 管理者用記事一覧画面 (`/admin/articles`)
-5. 記事投稿・編集画面 (`/admin/articles/create`, `/admin/articles/{id}/edit`)
+3. 記事管理一覧画面 (`/articles/manage`)
+4. 記事投稿・編集画面 (`/articles/create`, `/articles/{id}/edit`)
+
+**注記**: 認証機能は学習範囲外のため、ログイン画面は作成しません。
 
 ## ワイヤーフレーム
 
@@ -98,44 +101,11 @@ ADR Blog Lite の画面設計書です。学習目的に最適化されたシン
 - UseCaseで記事詳細とナビゲーション情報の取得
 - ResponderでMarkdownのHTML変換
 
-### 3. ログイン画面（管理者）
+### 3. 記事管理一覧画面
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    管理者ログイン                       │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│             ┌─────────────────────────────┐             │
-│             │                             │             │
-│             │ メールアドレス:             │             │
-│             │ [_________________________] │             │
-│             │                             │             │
-│             │ パスワード:                 │             │
-│             │ [_________________________] │             │
-│             │                             │             │
-│             │ ☐ ログイン状態を保持        │             │
-│             │                             │             │
-│             │        [ログイン]           │             │
-│             │                             │             │
-│             └─────────────────────────────┘             │
-│                                                         │
-│                   [← 公開サイトへ]                      │
-│                                                         │
-├─────────────────────────────────────────────────────────┤
-│ Footer: © 2024 ADR Blog Lite                            │
-└─────────────────────────────────────────────────────────┘
-```
-
-**学習ポイント**:
-- Actionでフォームバリデーション
-- UseCaseで認証処理
-- ResponderでRedirectレスポンス
-
-### 4. 管理者用記事一覧画面
-
-```
-┌─────────────────────────────────────────────────────────┐
-│ 管理画面                    [新規投稿]      [ログアウト] │
+│ 記事管理                               [新規投稿]        │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
 │ フィルタ: [全て ▼] [公開状態 ▼]           [検索_____] │
@@ -162,10 +132,10 @@ ADR Blog Lite の画面設計書です。学習目的に最適化されたシン
 
 **学習ポイント**:
 - Actionでクエリパラメータの処理
-- UseCaseで管理者用記事一覧の取得（フィルタ込み）
+- UseCaseで記事一覧の取得（フィルタ込み）
 - ResponderでテーブルデータのHTML生成
 
-### 5. 記事投稿・編集画面
+### 4. 記事投稿・編集画面
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -222,26 +192,23 @@ ADR Blog Lite の画面設計書です。学習目的に最適化されたシン
 </html>
 ```
 
-#### admin.blade.php（管理画面レイアウト）
+#### manage.blade.php（記事管理レイアウト）
 ```php
 @extends('layouts.app')
 
 @section('content')
 <header class="bg-white shadow mb-6">
     <div class="px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold">管理画面</h1>
+        <h1 class="text-xl font-bold">記事管理</h1>
         <div class="space-x-4">
-            <a href="{{ route('admin.articles.create') }}" class="btn-primary">新規投稿</a>
-            <form method="POST" action="{{ route('admin.logout') }}" class="inline">
-                @csrf
-                <button type="submit" class="btn-secondary">ログアウト</button>
-            </form>
+            <a href="{{ route('articles.create') }}" class="btn-primary">新規投稿</a>
+            <a href="{{ route('articles.index') }}" class="btn-secondary">公開サイトへ</a>
         </div>
     </div>
 </header>
 
 <main>
-    @yield('admin-content')
+    @yield('manage-content')
 </main>
 @endsection
 ```
@@ -372,16 +339,17 @@ export default {
 }
 ```
 
-## JavaScript (Alpine.js)
+## JavaScript（バニラJS）
 
 ### マークダウンプレビュー機能
 ```html
 {{-- 記事投稿・編集画面のプレビュー機能 --}}
-<div x-data="markdownEditor()" class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-2 gap-4">
     <div>
         <label class="block text-sm font-medium mb-2">本文（Markdown）</label>
         <textarea 
-            x-model="content"
+            id="markdown-content"
+            name="content"
             class="form-textarea"
             placeholder="マークダウン形式で記事を書いてください"
         ></textarea>
@@ -389,26 +357,31 @@ export default {
     <div>
         <label class="block text-sm font-medium mb-2">プレビュー</label>
         <div 
-            x-html="preview"
+            id="markdown-preview"
             class="border border-gray-300 rounded p-3 h-64 overflow-y-auto bg-white article-content"
         ></div>
     </div>
 </div>
 
 <script>
-function markdownEditor() {
-    return {
-        content: '',
-        get preview() {
-            // 実際の実装では marked.js などのライブラリを使用
-            return this.content
+document.addEventListener('DOMContentLoaded', function() {
+    const markdownContent = document.getElementById('markdown-content');
+    const markdownPreview = document.getElementById('markdown-preview');
+    
+    if (markdownContent && markdownPreview) {
+        markdownContent.addEventListener('input', function() {
+            const content = this.value;
+            // 簡単なマークダウン変換（実際の実装では marked.js などを使用）
+            const html = content
                 .replace(/^# (.*$)/gim, '<h1>$1</h1>')
                 .replace(/^## (.*$)/gim, '<h2>$1</h2>')
                 .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
                 .replace(/\n/gim, '<br>');
-        }
+            
+            markdownPreview.innerHTML = html;
+        });
     }
-}
+});
 </script>
 ```
 
@@ -420,27 +393,25 @@ function markdownEditor() {
 
 use App\Actions\Web\Articles\IndexAction;
 use App\Actions\Web\Articles\ShowAction;
-use App\Actions\Web\Auth\LoginAction;
-use App\Actions\Web\Admin\Articles\CreateAction;
+use App\Actions\Web\Articles\ManageIndexAction;
+use App\Actions\Web\Articles\CreateAction;
+use App\Actions\Web\Articles\EditAction;
+use App\Actions\Web\Articles\StoreAction;
+use App\Actions\Web\Articles\UpdateAction;
+use App\Actions\Web\Articles\DestroyAction;
 
 // 公開画面
 Route::get('/', IndexAction::class)->name('articles.index');
 Route::get('/articles/{article}', ShowAction::class)->name('articles.show');
 
-// 管理者認証
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/login', [LoginAction::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginAction::class, 'login']);
-    Route::post('/logout', [LoginAction::class, 'logout'])->name('logout');
-
-    Route::middleware('auth')->group(function () {
-        Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
-        Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
-        Route::post('/articles', [ArticleController::class, 'store'])->name('articles.store');
-        Route::get('/articles/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
-        Route::put('/articles/{article}', [ArticleController::class, 'update'])->name('articles.update');
-        Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->name('articles.destroy');
-    });
+// 記事管理画面（認証なし・学習用）
+Route::prefix('articles')->name('articles.')->group(function () {
+    Route::get('/manage', ManageIndexAction::class)->name('manage');
+    Route::get('/create', CreateAction::class)->name('create');
+    Route::post('/', StoreAction::class)->name('store');
+    Route::get('/{article}/edit', EditAction::class)->name('edit');
+    Route::put('/{article}', UpdateAction::class)->name('update');
+    Route::delete('/{article}', DestroyAction::class)->name('destroy');
 });
 ```
 
@@ -461,13 +432,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 </div>
 
 {{-- ナビゲーションのモバイル対応 --}}
-<nav class="bg-white shadow" x-data="{ open: false }">
+<nav class="bg-white shadow">
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center py-4">
             <h1 class="text-xl font-bold">ADR Blog Lite</h1>
             
             {{-- モバイルメニューボタン --}}
-            <button @click="open = !open" class="md:hidden">
+            <button id="mobile-menu-button" class="md:hidden">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
@@ -476,19 +447,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
             {{-- デスクトップメニュー --}}
             <div class="hidden md:flex space-x-4">
                 <a href="{{ route('articles.index') }}" class="hover:text-blue-600">記事一覧</a>
-                <a href="{{ route('admin.login') }}" class="hover:text-blue-600">管理者ログイン</a>
+                <a href="{{ route('articles.manage') }}" class="hover:text-blue-600">記事管理</a>
             </div>
         </div>
         
         {{-- モバイルメニュー --}}
-        <div x-show="open" class="md:hidden">
+        <div id="mobile-menu" class="md:hidden hidden">
             <div class="py-2 space-y-1">
                 <a href="{{ route('articles.index') }}" class="block px-4 py-2 hover:bg-gray-100">記事一覧</a>
-                <a href="{{ route('admin.login') }}" class="block px-4 py-2 hover:bg-gray-100">管理者ログイン</a>
+                <a href="{{ route('articles.manage') }}" class="block px-4 py-2 hover:bg-gray-100">記事管理</a>
             </div>
         </div>
     </div>
 </nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+});
+</script>
 ```
 
 ## 学習のためのUI実装ポイント
