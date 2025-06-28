@@ -2,6 +2,7 @@
 
 namespace App\Responders\Web;
 
+use App\Models\Article;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\View;
 
@@ -28,6 +29,19 @@ final readonly class ArticleWebResponder
             'currentPage' => $articles->currentPage(),
             'lastPage' => $articles->lastPage(),
             'hasPages' => $articles->hasPages(),
+        ]);
+    }
+
+    /**
+     * 記事詳細画面のレスポンス生成
+     *
+     * @param  Article  $article  記事データ（投稿者情報含む）
+     */
+    public function show(Article $article): View
+    {
+        return view('articles.show', [
+            'article' => $article,
+            'author' => $article->user,
         ]);
     }
 }

@@ -36,10 +36,11 @@
                     </div>
                     
                     <footer class="mt-4">
-                        <span class="inline-flex items-center text-gray-400 cursor-not-allowed" title="詳細ページは未実装">
+                        <a href="{{ route('articles.show', $article->id) }}" 
+                           class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                             続きを読む
                             <i class="fas fa-arrow-right ml-1"></i>
-                        </span>
+                        </a>
                     </footer>
                 </article>
             @endforeach
