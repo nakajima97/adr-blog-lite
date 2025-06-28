@@ -21,5 +21,8 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --optimize-autoloader
 
+      - name: Generate application key
+        run: php artisan key:generate --env=testing
+
       - name: Run tests
         run: vendor/bin/phpunit
