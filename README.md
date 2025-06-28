@@ -18,9 +18,18 @@
 
 ### 1. 開発環境の起動
 ```bash
+docker run --rm \
+  -v $(pwd):/opt \
+  -w /opt \
+  laravelsail/php83-composer:latest \
+  bash -c "composer install"
+```
+git cloneした直後は上記コマンドで起動します。
+
+```bash
 ./vendor/bin/sail up
 ```
-Docker環境を起動します。初回起動時は時間がかかる場合があります。
+一度起動した後であれば上記コマンドで起動可能です。
 
 ### 2. データベースマイグレーション
 ```bash
