@@ -27,6 +27,7 @@ final readonly class ListArticlesForManagementUseCase
      */
     public function execute(array $filters = [], int $page = 1, int $perPage = 15): LengthAwarePaginator
     {
+        /** @var Builder<Article> $query */
         $query = Article::query()
             ->with('user:id,name')  // N+1問題対策：ユーザー情報を事前読み込み
             ->latest();            // 最新順
@@ -42,6 +43,9 @@ final readonly class ListArticlesForManagementUseCase
 
     /**
      * クエリにフィルタリング条件を適用
+     * 
+     * @param Builder<Article> $query
+     * @param array $filters
      */
     private function applyFilters(Builder $query, array $filters): void
     {
