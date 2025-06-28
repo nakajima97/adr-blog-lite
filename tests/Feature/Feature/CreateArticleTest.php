@@ -19,6 +19,16 @@ class CreateArticleTest extends TestCase
         $response->assertViewIs('articles.create');
     }
 
+    public function test_記事管理画面に記事作成ボタンが表示される(): void
+    {
+        $response = $this->get('/articles/manage');
+
+        $response->assertStatus(200);
+        $response->assertSee('記事を投稿');
+        $response->assertSee('新しい記事を作成');
+        $response->assertSee(route('articles.create'));
+    }
+
     public function test_正常な記事データで記事が作成される(): void
     {
         // テスト用ユーザーの作成
