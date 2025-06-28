@@ -41,8 +41,6 @@ final readonly class ArticleManagementWebResponder
 
     /**
      * ステータスフィルタのオプションを取得
-     *
-     * @return array
      */
     private function getStatusOptions(): array
     {
@@ -61,4 +59,4 @@ final readonly class ArticleManagementWebResponder
             ],
         ];
     }
-} 
+}

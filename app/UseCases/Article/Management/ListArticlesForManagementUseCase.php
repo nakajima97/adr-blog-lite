@@ -42,9 +42,6 @@ final readonly class ListArticlesForManagementUseCase
 
     /**
      * クエリにフィルタリング条件を適用
-     *
-     * @param  Builder  $query
-     * @param  array  $filters
      */
     private function applyFilters(Builder $query, array $filters): void
     {
@@ -59,11 +56,11 @@ final readonly class ListArticlesForManagementUseCase
         }
 
         // 検索フィルタ（タイトル・内容）
-        if (isset($filters['search']) && !empty($filters['search'])) {
+        if (isset($filters['search']) && ! empty($filters['search'])) {
             $searchTerm = $filters['search'];
             $query->where(function (Builder $q) use ($searchTerm) {
                 $q->where('title', 'like', "%{$searchTerm}%")
-                  ->orWhere('content', 'like', "%{$searchTerm}%");
+                    ->orWhere('content', 'like', "%{$searchTerm}%");
             });
         }
 
@@ -76,4 +73,4 @@ final readonly class ListArticlesForManagementUseCase
             $query->whereDate('created_at', '<=', $filters['date_to']);
         }
     }
-} 
+}

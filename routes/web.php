@@ -1,8 +1,8 @@
 <?php
 
 use App\Actions\Article\ListArticlesAction;
-use App\Actions\Article\ShowArticleAction;
 use App\Actions\Article\Management\ListArticlesForManagementAction;
+use App\Actions\Article\ShowArticleAction;
 use Illuminate\Support\Facades\Route;
 
 // ホームページ

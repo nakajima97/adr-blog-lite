@@ -32,7 +32,7 @@ final readonly class ListArticlesForManagementAction
     {
         // フィルタリングパラメータの取得と検証
         $filters = $this->extractFilters($request);
-        
+
         // ページネーションパラメータの取得
         $page = max(1, $request->integer('page', 1));
         $perPage = min(50, max(1, $request->integer('per_page', 15))); // 管理画面では少し多めに表示
@@ -46,9 +46,6 @@ final readonly class ListArticlesForManagementAction
 
     /**
      * リクエストからフィルタリングパラメータを抽出・検証
-     *
-     * @param  Request  $request
-     * @return array
      */
     private function extractFilters(Request $request): array
     {
@@ -62,22 +59,22 @@ final readonly class ListArticlesForManagementAction
 
         // 検索クエリ（タイトル・内容）
         $search = $request->input('search');
-        if (!empty($search) && is_string($search)) {
+        if (! empty($search) && is_string($search)) {
             $filters['search'] = trim($search);
         }
 
         // 日付範囲フィルタ
         $dateFrom = $request->input('date_from');
         $dateTo = $request->input('date_to');
-        
-        if (!empty($dateFrom) && strtotime($dateFrom)) {
+
+        if (! empty($dateFrom) && strtotime($dateFrom)) {
             $filters['date_from'] = $dateFrom;
         }
-        
-        if (!empty($dateTo) && strtotime($dateTo)) {
+
+        if (! empty($dateTo) && strtotime($dateTo)) {
             $filters['date_to'] = $dateTo;
         }
 
         return $filters;
     }
-} 
+}
