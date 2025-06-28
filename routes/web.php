@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\Article\ListArticlesAction;
+use App\Actions\Article\ShowArticleAction;
 use Illuminate\Support\Facades\Route;
 
 // ホームページ
@@ -10,3 +11,8 @@ Route::get('/', function () {
 
 // 記事一覧表示（ADRパターン）
 Route::get('/articles', ListArticlesAction::class)->name('articles.index');
+
+// 記事詳細表示（ADRパターン）
+Route::get('/articles/{id}', ShowArticleAction::class)
+    ->name('articles.show')
+    ->where('id', '[0-9]+'); // 数値のみ許可

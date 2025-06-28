@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ' - 記事詳細')
+@section('title', ($article->title ?? '記事詳細') . ' - ADR Blog Lite')
 
 @section('content')
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -31,8 +31,7 @@
         </div>
         
         <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
-            {{-- {{ $article->title ?? 'サンプル記事: ADRパターンの実装について' }} --}}
-            サンプル記事: ADRパターンの実装について
+            {{ $article->title }}
         </h1>
         
         <div class="flex items-center justify-between flex-wrap gap-4">
@@ -44,32 +43,22 @@
                 </div>
                 <div class="ml-3">
                     <p class="text-sm font-medium text-gray-900 dark:text-white">
-                        {{-- {{ $article->author ?? '著者名' }} --}}
-                        著者名
+                        {{ $author->name }}
                     </p>
                     <p class="text-sm text-gray-500 dark:text-gray-400">
-                        {{-- {{ $article->created_at->format('Y年m月d日') ?? now()->format('Y年m月d日') }} --}}
-                        {{ now()->format('Y年m月d日') }}
+                        {{ $article->created_at->format('Y年m月d日') }}
                     </p>
                 </div>
             </div>
             
-            <!-- Action Buttons -->
+            <!-- 公開中の記事ラベル -->
             <div class="flex items-center space-x-3">
-                <a href="{{ route('articles.edit', ['article' => 1]) ?? '/articles/1/edit' }}" 
-                   class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                     </svg>
-                    編集
-                </a>
-                <button type="button" 
-                        class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-300 dark:border-red-600 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                    削除
-                </button>
+                    公開中
+                </span>
             </div>
         </div>
     </header>
@@ -77,40 +66,7 @@
     <!-- Article Content -->
     <article class="prose prose-lg dark:prose-invert max-w-none">
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8">
-            {{-- {!! $article->content ?? $sampleContent !!} --}}
-            <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
-                Action-Domain-Responder（ADR）パターンは、Webアプリケーションの設計パターンの一つで、従来のMVCパターンの問題点を解決するために提案されました。
-            </p>
-            
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">ADRパターンとは</h2>
-            <p class="text-gray-700 dark:text-gray-300 mb-4">
-                ADRパターンは以下の3つの層で構成されます：
-            </p>
-            
-            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 mb-6 space-y-2">
-                <li><strong>Action</strong>: リクエストを受け取り、Domainへの処理を委譲する</li>
-                <li><strong>Domain</strong>: ビジネスロジックを含む核となる処理</li>
-                <li><strong>Responder</strong>: レスポンス生成の責務を担う</li>
-            </ul>
-            
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">実装例</h2>
-            <p class="text-gray-700 dark:text-gray-300 mb-4">
-                以下は、Laravelでの基本的なADRパターンの実装例です：
-            </p>
-            
-            <pre class="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto text-sm"><code class="language-php">// Action
-class ListArticlesAction
-{
-    public function __invoke(Request $request, ListArticlesUseCase $useCase, ArticleListResponder $responder)
-    {
-        $articles = $useCase->execute();
-        return $responder->respond($articles);
-    }
-}</code></pre>
-            
-            <p class="text-gray-700 dark:text-gray-300 mt-6">
-                このように、各層の責務を明確に分離することで、保守性の高いコードを実現できます。
-            </p>
+            <div class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ $article->content }}</div>
         </div>
     </article>
 
@@ -125,13 +81,12 @@ class ListArticlesAction
                 記事一覧に戻る
             </a>
             
-            <a href="{{ route('articles.create', []) ?? '/articles/create' }}" 
-               class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors">
-                新しい記事を作成
+            <span class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 rounded-md cursor-not-allowed">
+                新しい記事を作成（未実装）
                 <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-            </a>
+            </span>
         </div>
     </nav>
 </div>
