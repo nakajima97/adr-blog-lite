@@ -20,6 +20,7 @@ final readonly class ShowArticleUseCase
      * 記事詳細を取得
      *
      * @param  int  $id  記事ID
+     *
      * @throws ModelNotFoundException 記事が見つからない、または非公開の場合
      */
     public function execute(int $id): Article
@@ -37,4 +38,4 @@ final readonly class ShowArticleUseCase
 
         return $article;
     }
-} 
+}

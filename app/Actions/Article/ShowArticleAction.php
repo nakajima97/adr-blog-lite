@@ -42,4 +42,4 @@ final readonly class ShowArticleAction
         // Responderでレスポンス整形
         return $this->responder->show($article);
     }
-} 
+}

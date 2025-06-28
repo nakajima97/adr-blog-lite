@@ -62,7 +62,7 @@ class ArticleDetailTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_存在しない記事IDでアクセスすると404エラー(): void
+    public function test_存在しない記事_i_dでアクセスすると404エラー(): void
     {
         $response = $this->get('/articles/99999');
 
@@ -132,7 +132,7 @@ class ArticleDetailTest extends TestCase
         }
     }
 
-    public function test_無効な記事IDフォーマットでアクセスすると404エラー(): void
+    public function test_無効な記事_i_dフォーマットでアクセスすると404エラー(): void
     {
         // 非数値の記事IDでアクセス
         $response = $this->get('/articles/invalid-id');
@@ -140,7 +140,7 @@ class ArticleDetailTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_負の記事IDでアクセスすると404エラー(): void
+    public function test_負の記事_i_dでアクセスすると404エラー(): void
     {
         $response = $this->get('/articles/-1');
 
@@ -178,4 +178,4 @@ class ArticleDetailTest extends TestCase
         $response2->assertSee($article2->content);
         $response2->assertDontSee($article1->title);
     }
-} 
+}

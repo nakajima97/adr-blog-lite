@@ -81,7 +81,7 @@ class ShowArticleActionTest extends TestCase
         $this->action->__invoke($request, $article->id);
     }
 
-    public function test_存在しない記事IDでアクセスすると404エラー(): void
+    public function test_存在しない記事_i_dでアクセスすると404エラー(): void
     {
         $nonExistentId = 99999;
         $request = Request::create("/articles/{$nonExistentId}", 'GET');
@@ -90,7 +90,7 @@ class ShowArticleActionTest extends TestCase
         $this->action->__invoke($request, $nonExistentId);
     }
 
-    public function test_負の記事IDでアクセスすると404エラー(): void
+    public function test_負の記事_i_dでアクセスすると404エラー(): void
     {
         $invalidId = -1;
         $request = Request::create("/articles/{$invalidId}", 'GET');
@@ -99,7 +99,7 @@ class ShowArticleActionTest extends TestCase
         $this->action->__invoke($request, $invalidId);
     }
 
-    public function test_ゼロの記事IDでアクセスすると404エラー(): void
+    public function test_ゼロの記事_i_dでアクセスすると404エラー(): void
     {
         $invalidId = 0;
         $request = Request::create("/articles/{$invalidId}", 'GET');
@@ -124,4 +124,4 @@ class ShowArticleActionTest extends TestCase
         $this->assertEquals('特定の投稿者', $data['author']->name);
         $this->assertEquals($specificUser->id, $data['author']->id);
     }
-} 
+}
